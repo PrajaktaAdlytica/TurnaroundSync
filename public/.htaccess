@@ -1,0 +1,12 @@
+DirectoryIndex index.html
+Options -Indexes
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# Serve existing assets normally; route application pages to React.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+# Missing assets must remain 404, not return HTML.
+RewriteRule ^(?:assets|images|brand|licenses)/ - [L]
+RewriteRule ^ index.html [L]
+</IfModule>

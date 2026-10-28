@@ -1,0 +1,50 @@
+[
+  {
+    "brokenImages": 0,
+    "overflow": false,
+    "route": "/",
+    "width": 1440
+  },
+  {
+    "brokenImages": 0,
+    "overflow": false,
+    "route": "/",
+    "width": 768
+  },
+  {
+    "brokenImages": 0,
+    "overflow": false,
+    "route": "/",
+    "width": 390
+  },
+  {
+    "brokenImages": 0,
+    "overflow": false,
+    "route": "/",
+    "width": 360
+  },
+  {
+    "brokenImages": 0,
+    "overflow": false,
+    "route": "/products/ramp-desk",
+    "width": 360
+  },
+  {
+    "brokenImages": 0,
+    "overflow": false,
+    "route": "/platform",
+    "width": 360
+  },
+  {
+    "brokenImages": 0,
+    "overflow": false,
+    "route": "/shadow-trial",
+    "width": 360
+  },
+  {
+    "brokenImages": 0,
+    "overflow": false,
+    "route": "/demo/",
+    "width": 360
+  }
+]

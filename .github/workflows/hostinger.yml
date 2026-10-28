@@ -1,0 +1,36 @@
+name: Build Hostinger static branch
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hostinger-static
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build && npm run test:sites
+      - name: Update built-files branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin hostinger
+          git worktree add --detach /tmp/turnaroundsync-publish origin/hostinger
+          rsync -a --delete --exclude=.git dist/client/ /tmp/turnaroundsync-publish/
+          cd /tmp/turnaroundsync-publish
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Build from ${GITHUB_SHA}"
+            git push origin HEAD:hostinger
+          fi
