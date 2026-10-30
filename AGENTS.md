@@ -16,3 +16,6 @@ User rejected the three tilted decorative source cards. Retain the aircraft imag
 
 ## Scroll-based hero refinement
 Hero camera and evidence are now driven by GSAP ScrollTrigger, not an autoplay loop. Desktop pins the hero for a 1450px scroll story, zooming the plane scene to 1.28x, drawing three source connectors, showing the mismatch and revealing dispatcher review. Mobile uses an unpinned scroll sequence; reduced motion shows the complete scene. Keep source annotations and plane in the same transformed scene so their endpoints stay attached. Preserve Skip sequence and chapter navigation.
+
+## Aviation opening film
+Use the user-supplied Aviation_introduction_video_crea…_d2ecfdb4.mp4 as the homepage intro, stored at public/videos/turnaroundsync-aviation-intro.mp4. Full viewport, right-aligned TurnaroundSync copy, Instrument Serif title, no video controls/poster/color overlay. Play once, then use Lenis to reach the existing aircraft hero; reveal hero text top to bottom on arrival. Preserve all existing pages. Opening navigation uses brand assets and a full-screen menu; pause film while menu is open. Reduced motion does not autoplay or smooth-scroll. The CTA also lets visitors proceed immediately.

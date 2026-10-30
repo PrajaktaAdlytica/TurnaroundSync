@@ -71,9 +71,90 @@ function Brand({ reversed = false }) {
     </Link>
   );
 }
+function IntroNavigation() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(window.scrollY > 40);
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+  const toggle = useRef(null);
+  const panel = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.dispatchEvent(new CustomEvent("turnaround:intro-menu", { detail: true }));
+    panel.current?.querySelector("a")?.focus();
+    const key = e => {
+      if (e.key === "Escape") { setOpen(false); toggle.current?.focus(); }
+      if (e.key === "Tab") {
+        const links = [...panel.current.querySelectorAll("a"), toggle.current];
+        const index = links.indexOf(document.activeElement);
+        e.preventDefault(); links[(index + (e.shiftKey ? links.length - 1 : 1)) % links.length].focus();
+      }
+    };
+    document.addEventListener("keydown", key);
+    return () => { document.body.style.overflow = previous; window.dispatchEvent(new CustomEvent("turnaround:intro-menu", { detail: false })); document.removeEventListener("keydown", key); };
+  }, [open]);
+  return <div className={`intro-navigation ${scrolled ? "is-scrolled" : ""}`}>
+    <div className="intro-nav-bar"><Brand reversed />
+      <button ref={toggle} className="intro-menu-toggle" aria-expanded={open} aria-controls="intro-menu" aria-label={open ? "Close navigation" : "Open navigation"} onClick={() => setOpen(!open)}><span className="intro-toggle-label">{open ? "Close" : "Navigate"}</span><span className={`intro-hamburger ${open ? "is-open" : ""}`}><i/><i/></span></button>
+      <img className="intro-nav-symbol" src="/brand/symbol-white.svg" alt="" />
+    </div>
+    <nav ref={panel} id="intro-menu" aria-label="Intro navigation" className={`intro-menu ${open ? "is-open" : ""}`} inert={!open ? true : undefined}>
+      {[["The story", "#stand-hero"], ["The platform", "/platform"], ["The modules", "/products"], ["Discuss a trial", "/shadow-trial"]].map(([label, href], i) => <a key={href} href={href} style={{"--link-delay": `${150 + i * 80}ms`}} onClick={() => setOpen(false)}>{label}</a>)}
+    </nav>
+  </div>;
+}
+function VideoIntro() {
+  const video = useRef(null), root = useRef(null), departed = useRef(false);
+
+  const enter = () => {
+    departed.current = true;
+    video.current?.pause();
+    window.dispatchEvent(new Event("turnaround:enter-hero"));
+  };
+  useEffect(() => {
+    const media = video.current;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced && !location.hash) media.play().catch(() => {});
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) { departed.current = true; media.pause(); }
+    });
+    observer.observe(root.current);
+    const hide = () => { if (document.hidden) media.pause(); };
+    const menu = e => {
+      if (e.detail) media.pause();
+      else if (!departed.current && !reduced && !media.ended) media.play().catch(() => {});
+    };
+    document.addEventListener("visibilitychange", hide);
+    window.addEventListener("turnaround:intro-menu", menu);
+    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", hide); window.removeEventListener("turnaround:intro-menu", menu); media.pause(); };
+  }, []);
+  return <section ref={root} className="video-intro" aria-label="TurnaroundSync introduction">
+    <div className="intro-film"><video ref={video} src="/videos/turnaroundsync-aviation-intro.mp4" muted playsInline preload="auto" onEnded={() => { if (!departed.current && root.current.getBoundingClientRect().bottom > innerHeight * .6) enter(); }} /></div>
+    <div className="intro-copy">
+      <span className="intro-eyebrow">TURNAROUNDSYNC / A SHARED PERSPECTIVE</span>
+      <h1>Every turnaround.<br/>A clearer perspective.</h1>
+      <p>Three sources. One unfolding story.<br/>Every judgment stays human.</p>
+      <button className="intro-enter" onClick={enter}>Explore the stand <ArrowRight size={17}/></button>
+      <small>CONCEPT PREVIEW · SYNTHETIC DATA</small>
+    </div>
+  </section>;
+}
 function Header() {
+  const [intro, setIntro] = useState(location.pathname === "/" && window.scrollY < window.innerHeight - 82);
+  useEffect(() => {
+    const update = () => setIntro(location.pathname === "/" && window.scrollY < window.innerHeight - 82);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+  }, []);
   const [open, setOpen] = useState(false),
     [menu, setMenu] = useState("");
+  if (intro) return <IntroNavigation />;
   return (
     <header
       className="header"
@@ -246,7 +327,7 @@ function HomeHero() {
   };
   return (<>
 
-    <section ref={root} className={`home-hero cinematic-hero story-phase-${phase}`} aria-label="From stand evidence to dispatcher review">
+    <section id="stand-hero" ref={root} className={`home-hero cinematic-hero story-phase-${phase}`} aria-label="From stand evidence to dispatcher review">
       <div className="hero-copy">
         <Label />
         <h1 className="hero-title">
@@ -975,6 +1056,7 @@ function Footer() {
 function Home() {
   return (
     <>
+      <VideoIntro />
       <HomeHero />
       <Incident />
       <Evidence />
@@ -2164,6 +2246,15 @@ export default function App() {
       gsap.ticker.add(tick);
       lenis._tick = tick;
     }
+    const enterHero = () => {
+      const hero = document.getElementById("stand-hero");
+      if (!hero) return;
+      const story = ScrollTrigger.getById("heroStory");
+      const target = story?.vars.pin ? story.start : hero.getBoundingClientRect().top + window.scrollY - 82;
+      if (lenis) lenis.scrollTo(target, { duration: 1.8, easing: t => 1 - Math.pow(1 - t, 4) });
+      else window.scrollTo({ top: target, behavior: "instant" });
+    };
+    window.addEventListener("turnaround:enter-hero", enterHero);
     const ctx = gsap.context(() => {
       const animate = (selector, vars) => {
         if (document.querySelector(selector)) gsap.from(selector, vars);
@@ -2191,7 +2282,8 @@ export default function App() {
           clearProps: "all",
         });
         animate(".hero-copy > *", {
-          y: 24,
+          scrollTrigger: { trigger: ".home-hero", start: "top 65%", once: true },
+          y: -32,
           opacity: 0,
           duration: 0.85,
           stagger: 0.1,
@@ -2250,6 +2342,7 @@ export default function App() {
     });
     return () => {
       disposed = true;
+      window.removeEventListener("turnaround:enter-hero", enterHero);
       ctx.revert();
       if (lenis) {
         gsap.ticker.remove(lenis._tick);

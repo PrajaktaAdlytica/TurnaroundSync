@@ -105,3 +105,10 @@ Footer revision final result: passed
 - Mobile menu opened and closed successfully; no captured browser console errors.
 - Saved measurements: qa/release-responsive-checks.json. Demo phone capture: qa/release-demo-360.png.
 - Quick smoke check, not a comprehensive accessibility or cross-browser audit. Hostinger Apache rewrite behavior, live domain, SSL and backend form delivery have not been verified; forms/auth remain frontend-only previews.
+
+## Aviation intro — 30 October 2026
+- Replaced the abandoned rainforest asset with the user's 2.9 MB aviation clip (browser duration 7.93 seconds).
+- Desktop 1440×900: video ended and automatic Lenis handoff settled at hero top 80px; title opacity 1; no horizontal overflow or captured console errors.
+- Mobile 390×844: video ended and handoff settled at hero top 82px; no horizontal overflow. Right-aligned copy and hamburger verified visually.
+- Menu opens, locks body scroll and pauses video; close resumes playback. Intro CTA bypasses the film. Existing hero scene/timeline story retained.
+- Build and all four existing hosting tests passed. No deployment performed for this change.
