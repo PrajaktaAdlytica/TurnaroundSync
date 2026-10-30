@@ -4470,3 +4470,9 @@ body:has(.video-intro) .header { position: fixed; inset: 0 0 auto; }
   .intro-film video { object-position: 68% center; }
 }
 @media (min-width: 640px) and (max-width: 767px) { .intro-copy h1 { font-size: 48px; } }
+/* Keep the plane in its own column throughout the reveal, including WebKit. */
+@media (min-width: 1000px) {
+  .cinematic-hero .hero-art { left: 46%; right: 0; width: 54%; height: calc(100% - 65px); }
+  .cinematic-hero .hero-copy { width: 44%; padding-right: 24px; }
+  .cinematic-hero .hero-title { font-size: clamp(50px, 5.1vw, 80px); }
+}

@@ -112,3 +112,6 @@ Footer revision final result: passed
 - Mobile 390×844: video ended and handoff settled at hero top 82px; no horizontal overflow. Right-aligned copy and hamburger verified visually.
 - Menu opens, locks body scroll and pauses video; close resumes playback. Intro CTA bypasses the film. Existing hero scene/timeline story retained.
 - Build and all four existing hosting tests passed. No deployment performed for this change.
+
+## Hero overlap correction — 30 October 2026
+User's Safari screenshot showed the aircraft expanded behind the text after the intro. Removed the scroll timeline's panel-width/height expansion and retained a CSS-owned 54% scene column, with a separate 44% text column and gap. Full-width timeline overlay remains independent. Local desktop DOM confirms art starts at 662px, text ends at 634px at 1440px viewport. Build and four hosting checks pass. Safari-specific reproduction is not independently verified.

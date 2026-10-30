@@ -308,8 +308,7 @@ function HomeHero() {
         tl.to(scope(".hero-copy, .evidence-console, .hero-observation, .hero-bottom"), { opacity: 0, duration: .18 }, 1)
           .to(scope(".hero-plane, .scene-discrepancy, .stand-target, .source-beacon"), { opacity: 0, duration: .23 }, 1)
           .to(root.current, { backgroundColor: "#1b2521", duration: .35 }, 1)
-          .to(scope(".hero-art"), { width: "100%", height: "100%", duration: .4, ease: "power2.inOut" }, 1)
-          .to(scope(".scene-camera"), { scale: 1, xPercent: 0, yPercent: 0, height: "100%", duration: .4, ease: "power2.inOut" }, 1)
+          .to(scope(".scene-camera"), { scale: 1, xPercent: 0, yPercent: 0, duration: .4, ease: "power2.inOut" }, 1)
           .set(lines, { strokeDasharray: "none", strokeDashoffset: 0 }, 1)
           .to(lines, { stroke: "#b9c6bd", duration: .25 }, 1);
         lines.forEach((line, i) => tl.to(line, { attr: { d: straight[i] }, duration: .4, ease: "power2.inOut" }, 1));
